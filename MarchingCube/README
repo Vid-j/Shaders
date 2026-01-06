@@ -1,0 +1,65 @@
+# OpenGL Shader-Based 3D Rendering
+
+This project demonstrates a 3D rendering application using OpenGL. It includes custom vertex and fragment shaders, a camera system, and the ability to render 3D objects with transformations.
+
+## Features
+
+- Custom vertex and fragment shaders
+- MVP (Model-View-Projection) matrix for transformations
+- Camera control for viewing the scene
+- Rendering of 3D objects
+
+## some scalar funstions to use
+
+Sphere: 
+    auto scalarFunction = [](float x, float y, float z) {
+         return x*x + y*y + z*z - 1.0f; 
+    };
+
+Waves:
+    auto scalarFunction = [](float x, float y, float z) {
+        return y - sin(x) * cos(z);
+     };
+    float isovalue = 0.0f;
+    
+Cone:
+    auto scalarFunction = [](float x, float y, float z) {
+         return x*x - (y*y) - (z*z) - z ;
+     };
+
+Sattered floating balls
+    auto scalarFunction = [](float x, float y, float z) {
+        return cos(x*2) - sin(y*2) - sin(z*2) ;
+    }
+
+## Prerequisites
+
+Ensure you have the following installed on your system:
+
+- **GLEW**: OpenGL Extension Wrangler Library
+- **GLFW**: Library for creating windows and handling input
+- **GLM**: OpenGL Mathematics library
+
+### Files used
+
+- Camera.cpp
+- Camera.hpp
+- main.cpp
+- marching.cpp
+- marching.hpp
+- TriTable.hpp
+- SHADER FILES
+    - fragment_shader.glsl
+    - vertex_shader.glsl
+
+### How to complie and run
+
+g++ -o assign5 Camera.cpp marching.cpp main.cpp -lGL -lglfw -lGLEW
+./assign5
+
+### Install Required Libraries (Linux)
+
+```sh
+sudo apt-get update
+sudo apt-get install build-essential libglew-dev libglfw3-dev libglm-dev
+
