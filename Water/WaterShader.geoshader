@@ -1,0 +1,76 @@
+#version 400 core
+
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+
+// Input from TES
+in vec3 position_tes[];
+in vec2 uv_tes[];
+in vec3 eye_tes[];
+in vec3 light_tes[];
+
+// Output to FS
+out vec2 UV;
+out vec3 Normal_cameraspace;
+out vec3 EyeDirection_cameraspace;
+out vec3 LightDirection_cameraspace;
+
+uniform sampler2D displacementTexture;
+uniform float time;
+uniform mat4 MVP;
+
+// Gerstner wave function
+vec3 Gerstner(vec3 worldpos, float w, float A, float phi, float Q, vec2 D) {
+    float dotTerm = dot(D, worldpos.xz);
+    float angle = w * dotTerm + phi * time;
+
+    float x = Q * A * D.x * cos(angle);
+    float y = A * sin(angle);
+    float z = Q * A * D.y * cos(angle);
+
+    return vec3(x, y, z);
+}
+
+// Recalculate normal from triangle
+vec3 GetNormal(vec3 a, vec3 b, vec3 c) {
+    vec3 ab = b - a;
+    vec3 ac = c - a;
+    return normalize(cross(ab, ac));
+}
+
+void main() {
+    vec3 displaced[3];
+
+    // Apply Gerstner displacement to all 3 triangle points
+    for (int i = 0; i < 3; ++i) {
+        vec3 pos = position_tes[i];
+
+        // Add multiple wave effects
+        vec3 waveOffset = vec3(0.0);
+        waveOffset += Gerstner(pos, 4.0, 0.08, 1.0, 0.75, vec2(0.3, 0.6));
+        waveOffset += Gerstner(pos, 2.0, 0.05, 1.5, 0.6, vec2(0.2, 0.866));
+
+        // Optionally add displacement texture height to y
+        float disp = texture(displacementTexture, uv_tes[i]).r;
+        pos.y += disp * 0.02;
+
+        displaced[i] = pos + waveOffset;
+    }
+
+    // Compute face normal
+    vec3 norm = GetNormal(displaced[0], displaced[1], displaced[2]);
+
+    // Emit triangle with displaced vertices
+    for (int i = 0; i < 3; ++i) {
+        gl_Position = MVP * vec4(displaced[i], 1.0);
+
+        UV = uv_tes[i];
+        Normal_cameraspace = norm;
+        EyeDirection_cameraspace = eye_tes[i];
+        LightDirection_cameraspace = light_tes[i];
+
+        EmitVertex();
+    }
+
+    EndPrimitive();
+}

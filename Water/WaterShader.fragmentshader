@@ -1,0 +1,30 @@
+#version 400 core
+
+in vec2 UV;
+in vec3 Normal_cameraspace;
+in vec3 EyeDirection_cameraspace;
+in vec3 LightDirection_cameraspace;
+
+out vec4 color_out;
+
+uniform sampler2D waterTexture;
+uniform vec4 modelcolor;
+
+void main() {
+    vec3 n = normalize(Normal_cameraspace);
+    vec3 l = normalize(LightDirection_cameraspace);
+    vec3 e = normalize(EyeDirection_cameraspace);
+
+    vec4 texColor = texture(waterTexture, UV);
+
+    // Simple lighting
+    float diffuse = max(dot(n, l), 0.0);
+    vec3 h = normalize(l + e);
+    float specular = pow(max(dot(n, h), 0.0), 8.0);
+
+    vec4 ambient = 0.2 * texColor;
+    vec4 diffuseCol = diffuse * texColor;
+    vec4 specularCol = specular * vec4(0.7, 0.7, 0.7, 1.0);
+
+    color_out = ambient + diffuseCol + specularCol;
+}

@@ -1,0 +1,55 @@
+# Water Simulation with Tessellation and Phong Shading
+
+
+This project demonstrates a water simulation using OpenGL, featuring tessellation shaders, Gerstner waves, and Phong shading for realistic lighting. The simulation includes dynamic wave displacement and texture mapping.
+
+
+# Features
+
+- **Tessellation Shaders**: Adaptive tessellation for smooth water surfaces.
+- **Gerstner Waves**: Realistic wave simulation using mathematical wave functions.
+- **Phong Shading**: Lighting model with ambient, diffuse, and specular components.
+- **Texture Mapping**: Water surface and displacement textures for added realism.
+- **Camera Controls**: Interactive globe-style camera for viewing the scene.
+
+
+# File Structure
+
+
+**Shaders**:
+  - `WaterShader.vertexshader`: Vertex shader for initial vertex processing.
+  - `WaterShader.tcs`: Tessellation control shader for tessellation levels.
+  - `WaterShader.tes`: Tessellation evaluation shader for vertex interpolation.
+  - `WaterShader.geoshader`: Geometry shader for wave displacement and normal calculation.
+  - `WaterShader.fragmentshader`: Fragment shader for Phong shading.
+
+
+**Source Code**:
+  - `A6-Water.cpp`: Main program entry point.
+  - `camera.cpp` and `camera.hpp`: Camera controls for interactive viewing.
+  - `PlaneMesh.hpp`: Plane mesh generation and rendering logic.
+  - `shader_utils.cpp` and `shader_utils.hpp`: Shader and texture loading utilities.
+
+
+**Assets**:
+  - Textures and models for rendering (`Assets/`).
+
+
+# Dependencies
+- **Libraries**: OpenGL, GLEW, GLFW, GLM.
+- **Compiler**: GCC with C++17 support.
+
+
+# Build Instructions
+1. Ensure you have the required libraries installed:
+   ```bash
+   sudo apt-get install libglew-dev libglfw3-dev libglm-dev
+
+
+# RUN program
+cd assign6
+make
+./water
+./water <screen_width> <screen_height> <step_size> <xmin> <xmax>
+
+

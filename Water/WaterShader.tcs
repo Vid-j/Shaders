@@ -1,0 +1,38 @@
+#version 400 core
+
+layout (vertices = 4) out;
+
+// Inputs from Vertex Shader
+in vec3 Position_worldspace[];
+in vec2 UV[];
+in vec3 EyeDirection_cameraspace[];
+in vec3 LightDirection_cameraspace[];
+in vec3 Normal_cameraspace[];
+
+// Outputs to Tess Eval Shader
+out vec3 position_tcs[];
+out vec2 uv_tcs[];
+out vec3 eye_tcs[];
+out vec3 light_tcs[];
+out vec3 normal_tcs[];
+
+// Uniforms
+uniform float outerTess;
+uniform float innerTess;
+
+void main() {
+    position_tcs[gl_InvocationID] = Position_worldspace[gl_InvocationID];
+    uv_tcs[gl_InvocationID] = UV[gl_InvocationID];
+    eye_tcs[gl_InvocationID] = EyeDirection_cameraspace[gl_InvocationID];
+    light_tcs[gl_InvocationID] = LightDirection_cameraspace[gl_InvocationID];
+    normal_tcs[gl_InvocationID] = Normal_cameraspace[gl_InvocationID];
+
+    if (gl_InvocationID == 0) {
+        gl_TessLevelOuter[0] = outerTess;
+        gl_TessLevelOuter[1] = outerTess;
+        gl_TessLevelOuter[2] = outerTess;
+        gl_TessLevelOuter[3] = outerTess;
+        gl_TessLevelInner[0] = innerTess;
+        gl_TessLevelInner[1] = innerTess;
+    }
+}
